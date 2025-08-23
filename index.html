@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VBS后台打开网页生成器</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="url"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            margin: 20px auto;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .code-block {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin-top: 20px;
+            display: none;
+        }
+        .instructions {
+            background-color: #fff8e1;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>VBS后台打开网页生成器</h1>
+        
+        <div class="instructions">
+            <p>此工具帮助您生成一个VBScript文件，该文件运行时会在后台打开指定的网页链接。</p>
+        </div>
+        
+        <div class="form-group">
+            <label for="urlInput">输入要打开的网页URL：</label>
+            <input type="url" id="urlInput" placeholder="https://www.example.com" value="https://www.example.com">
+        </div>
+        
+        <button onclick="generateVbs()">生成VBS文件</button>
+        
+        <div class="code-block" id="codeBlock">
+            <pre><code id="vbsCode"></code></pre>
+        </div>
+        
+        <div class="instructions">
+            <p><strong>使用方法：</strong></p>
+            <ol>
+                <li>输入您想要在后台打开的网页URL</li>
+                <li>点击"生成VBS文件"按钮</li>
+                <li>保存生成的VBS文件到您的计算机</li>
+                <li>双击运行该VBS文件，它将在后台打开指定的网页</li>
+            </ol>
+            <p><strong>注意：</strong>根据您的浏览器和安全设置，可能会看到浏览器窗口短暂出现。</p>
+        </div>
+    </div>
+
+    <script>
+        function generateVbs() {
+            const url = document.getElementById('urlInput').value;
+            if (!url) {
+                alert('请输入有效的URL');
+                return;
+            }
+            
+            const vbsCode = `Set WshShell = CreateObject("WScript.Shell")\nWshShell.Run "cmd /c start /min ${url}", 0, False`;
+            
+            document.getElementById('vbsCode').textContent = vbsCode;
+            document.getElementById('codeBlock').style.display = 'block';
+            
+            // 创建并下载VBS文件
+            const blob = new Blob([vbsCode], { type: 'application/vbs' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'open_url_in_background.vbs';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+    </script>
+</body>
+</html>
